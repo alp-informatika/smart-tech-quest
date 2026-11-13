@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071b49">
+<title>SMART TECH QUEST PRO | Sistem Komputer</title>
+<style>
+  /* Base Variables */
+  :root {
+    --navy: #071b49;
+    --blue: #0878e8;
+    --cyan: #36d7ff;
+    --gold: #ffd43b;
+    --ink: #10234b;
+    --muted: #64748b;
+    --green: #19b889;
+    --red: #e85d75;
+  }
+
+  /* Reset & Global */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #06163b, #0b3478);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+  button, input, select { font: inherit; }
+  button { cursor: pointer; border: 0; }
+  .wrap { max-width: 1180px; margin: auto; padding: 18px; }
+
+  /* Utility Classes */
+  .hidden { display: none !important; }
+  .muted { font-size: 13px; color: #6b7d95; }
+  
+  /* Authentication Screen */
+  #appShell { display: none; }
+  #authScreen { max-width: 520px; margin: 7vh auto; padding: 24px; }
+  .auth-head { text-align: center; color: white; margin-bottom: 16px; }
+  .auth-card {
+    background: linear-gradient(145deg, #fff, #e5f4ff);
+    border-radius: 25px;
+    padding: 28px;
+    box-shadow: 0 20px 55px #0005;
+  }
+  .auth-card h1 { color: #09275f; margin: 8px 0; }
+  .auth-tabs { display: flex; gap: 8px; margin: 18px 0; }
+  .auth-tabs button {
+    flex: 1; padding: 11px; border-radius: 12px;
+    background: #e8f2ff; color: #164477; font-weight: 800;
+  }
+  .auth-tabs button.active { background: #0878e8; color: #fff; }
+  .auth-field { margin: 12px 0; }
+  .auth-field label {
+    display: block; font-weight: 800; font-size: 12px;
+    color: #52647f; margin-bottom: 6px;
+  }
+  .auth-field input, .auth-field select {
+    width: 100%; padding: 13px; border: 1px solid #cfe0f4;
+    border-radius: 12px; outline: none; transition: border-color 0.2s;
+  }
+  .auth-field input:focus, .auth-field select:focus { border-color: var(--blue); }
+  .auth-note { font-size: 12px; color: #64748b; line-height: 1.5; }
+  .auth-error { color: #b4233c; font-size: 13px; font-weight: 700; margin-top: 10px; }
+
+  /* Header & Top Bar */
+  .top { display: flex; align-items: center; justify-content: space-between; color: #fff; gap: 12px; margin-bottom: 16px; }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .logo {
+    width: 48px; height: 48px; border-radius: 15px;
+    background: linear-gradient(135deg, #ffe66d, #ff9f1c);
+    display: grid; place-items: center; font-size: 26px;
+  }
+  .brand b { letter-spacing: 1px; }
+  .brand small { display: block; color: #b9dfff; font-size: 10px; letter-spacing: 2px; margin-top: 4px; }
+  .topstats { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    background: #ffffff1c; border: 1px solid #ffffff40;
+    color: #fff; padding: 9px 13px; border-radius: 30px; font-size: 13px;
+  }
+
+  /* Panels & Hero */
+  .hero, .panel {
+    background: #f6fbff; border-radius: 25px; padding: 25px;
+    box-shadow: 0 18px 45px #0003; margin-bottom: 16px;
+  }
+  .hero {
+    display: grid; grid-template-columns: 1.3fr .7fr; align-items: center;
+    background: linear-gradient(115deg, #fff, #d9f2ff); overflow: hidden;
+  }
+  .eyebrow { font-size: 11px; font-weight: 900; letter-spacing: 2px; color: #0878e8; }
+  .hero h1 { font-size: clamp(32px, 5vw, 56px); line-height: 1; margin: 12px 0; color: #08245b; }
+  .hero h1 span { color: #0878e8; }
+  .hero p { line-height: 1.6; color: #526984; max-width: 650px; }
+  .heroart { text-align: center; font-size: clamp(100px, 17vw, 180px); filter: drop-shadow(0 15px 12px #0878e855); }
+  .sectionhead { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px; }
+  .sectionhead h2 { margin: 0; color: #0a285e; }
+
+  /* Buttons */
+  .btn { padding: 12px 17px; border-radius: 13px; font-weight: 800; transition: .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .primary { background: linear-gradient(135deg, #0878e8, #0754b7); color: white; }
+  .gold { background: linear-gradient(135deg, #ffe66d, #ffb703); color: #18264b; }
+  .soft { background: #e8f4ff; color: #0754b7; }
+  .dark { background: #102b60; color: white; }
+  .actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 16px; }
+
+  /* Grids & Cards */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
+  .card {
+    background: #fff; border: 1px solid #dcecff; border-radius: 18px;
+    padding: 17px; box-shadow: 0 7px 18px #0c4c8910;
+  }
+  .card h3 { margin: 7px 0; }
+  .card p { font-size: 13px; color: #657890; line-height: 1.5; }
+  .emoji { font-size: 34px; }
+  
+  /* Stats Display */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+  .stat { background: #ffffff18; border: 1px solid #ffffff30; color: #fff; border-radius: 16px; padding: 13px; }
+  .stat b { display: block; font-size: 22px; }
+  .stat small { color: #c1dcf7; }
+
+  /* Forms & Avatars */
+  .formgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field label { display: block; font-size: 12px; font-weight: 800; margin-bottom: 6px; color: #52647f; }
+  .field input, .field select { width: 100%; padding: 12px; border: 1px solid #cfe0f4; border-radius: 12px; background: white; color: #19345e; }
+  .avatars { display: flex; gap: 8px; flex-wrap: wrap; }
+  .av { font-size: 27px; padding: 9px; border: 2px solid #d9e9fa; background: #fff; border-radius: 13px; transition: .2s; }
+  .av.active { border-color: #0878e8; background: #eaf6ff; transform: scale(1.1); }
+
+  /* Quiz System */
+  .progress { height: 9px; background: #dcecff; border-radius: 20px; overflow: hidden; margin-top: 8px; }
+  .progress span { display: block; height: 100%; background: linear-gradient(90deg, #0878e8, #20c997); transition: width 0.3s ease; }
+  .question { font-size: 22px; line-height: 1.4; color: #0b2c65; margin: 18px 0; }
+  .stimulus { background: #eef7ff; border-left: 4px solid #1685e8; border-radius: 12px; padding: 14px; color: #344d70; line-height: 1.6; font-size: 14px; }
+  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .answer {
+    padding: 14px; text-align: left; border: 2px solid #dcecff;
+    border-radius: 13px; background: #fff; color: #20395f; font-weight: 700; transition: .2s;
+  }
+  .answer:hover:not(:disabled) { border-color: #0878e8; background: #f0f8ff; }
+  .answer.ok { border-color: #19b889; background: #e9fff7; }
+  .answer.no { border-color: #e85d75; background: #fff0f2; }
+  .feedback { padding: 13px; border-radius: 12px; margin-top: 13px; font-weight: 700; }
+  .good { background: #e6fff5; color: #087d5d; }
+  .bad { background: #fff0ed; color: #a34224; }
+
+  /* Leaderboard Table */
+  .table { width: 100%; border-collapse: collapse; background: white; border-radius: 14px; overflow: hidden; }
+  .table th, .table td { text-align: left; padding: 11px; border-bottom: 1px solid #e6eef8; font-size: 13px; }
+  .table th { background: #eaf4ff; color: #12366e; }
+  .rank { font-weight: 900; color: #0878e8; }
+
+  /* Arcade Common */
+  .gameboard {
+    background: linear-gradient(135deg, #eaf7ff, #f7fbff);
+    border: 2px solid #cce7ff; border-radius: 18px; padding: 16px; margin-top: 14px;
+  }
+
+  /* Picture Game */
+  .game-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top:15px; }
+  .picture-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+  .picture-piece {
+    font-size: 34px; background: #fff; border: 2px dashed #91bfe9;
+    border-radius: 14px; padding: 14px; text-align: center; cursor: pointer; transition: .2s;
+  }
+  .picture-piece.selected { background: #dceeff; border-color: #0878e8; box-shadow: 0 0 0 3px #0878e833; }
+  .picture-piece.done { border-style: solid; border-color: #19b889; background: #e8fff5; cursor: default; }
+  .game-tile {
+    background: white; border: 2px solid #cfe3f8; border-radius: 14px;
+    padding: 14px; text-align: center; font-weight: 800; color: #16345f; min-height: 90px;
+  }
+  .game-tile:disabled { opacity: 0.65; cursor: not-allowed; }
+  .game-tile.correct { background: #c9f7df; border: 2px solid #12a66a; color: #075b3b; }
+  .game-tile.wrong { background: #ffe0e0; border: 2px solid #e34b4b; color: #8b1d1d; }
+
+  /* Runner Game */
+  .runner {
+    height: 190px; position: relative; overflow: hidden; border-radius: 16px;
+    background: linear-gradient(#b9e7ff 0 65%, #7bd68e 65% 100%);
+    border: 2px solid #9bcdf0; cursor: pointer;
+  }
+  .runner:after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 9px; background: #318b55; }
+  .runner-player { position: absolute; bottom: 10px; left: 45px; font-size: 40px; z-index: 2; }
+  .runner-obstacle { position: absolute; bottom: 10px; right: -40px; font-size: 34px; animation: obstacleMove 2.1s linear infinite; }
+  .runner-obstacle:nth-of-type(2) { animation-delay: 0.6s; }
+  .runner-obstacle:nth-of-type(3) { animation-delay: 1.2s; }
+  .runner-obstacle:nth-of-type(4) { animation-delay: 1.8s; }
+  .runner-obstacle:nth-of-type(5) { animation-delay: 2.4s; }
+  .runner-obstacle:nth-of-type(6) { animation-delay: 3s; }
+  .runner.jump .runner-player { animation: jump 0.65s ease; }
+  .runner.paused .runner-obstacle { animation-play-state: paused; }
+  
+  @keyframes obstacleMove { from { right: -40px; } to { right: 110%; } }
+  @keyframes jump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-85px); } }
+
+  /* Memory Game */
+  .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
+  .memory-card {
+    min-height: 76px; font-size: 28px; background: #fff; border: 2px solid #cfe3f8;
+    border-radius: 13px; cursor: pointer; transition: .2s; box-shadow: 0 3px 0 #d5e5f5;
+  }
+  .memory-card:nth-child(4n+1) { background: #fff0c9; border-color: #f2c45b; }
+  .memory-card:nth-child(4n+2) { background: #e4f3ff; border-color: #7dbce9; }
+  .memory-card:nth-child(4n+3) { background: #f3e6ff; border-color: #c39ae8; }
+  .memory-card:nth-child(4n)   { background: #e1ffef; border-color: #83d5a8; }
+  .memory-card.revealed { background: #e8f4ff !important; border: 3px solid #167bd2 !important; transform: scale(1.04); }
+  .memory-card.matched { background: #c9f7df !important; border: 3px solid #12a66a !important; color: #075b3b; transform: scale(1); cursor: default;}
+
+  /* Certificate */
+  .certificate {
+    max-width: 850px; margin: 12px auto; padding: 38px; text-align: center;
+    border: 10px double #d7a923; background: linear-gradient(135deg, #fffdf3, #fff); color: #172d55;
+  }
+  .certificate h1 { font-family: Georgia, serif; font-size: 36px; color: #9b7410; margin-bottom: 5px;}
+  .certificate .certname { font-size: 30px; font-weight: 900; border-bottom: 2px solid #d6b44f; display: inline-block; padding: 8px 25px; }
+  .certificate p { line-height: 1.7; }
+  
+  .footer { text-align: center; color: #b9d5f4; font-size: 11px; padding: 10px; }
+
+  /* Responsive Design */
+  @media(max-width: 760px) {
+    .wrap { padding: 11px; }
+    .hero { grid-template-columns: 1fr; padding: 20px; }
+    .heroart { font-size: 95px; order: -1; }
+    .grid { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .formgrid, .answers { grid-template-columns: 1fr; }
+    .top { align-items: flex-start; }
+    .topstats .chip:nth-child(2) { display: none; }
+    .hero h1 { font-size: 38px; }
+    .panel { padding: 17px; }
+  }
+
+  /* Print Styles */
+  @media print {
+    body { background: white; }
+    .top, .hero, .stats, .panel:not(#certPanel), .footer, .no-print { display: none !important; }
+    #certPanel { display: block !important; box-shadow: none; margin: 0; padding: 0; background: transparent;}
+    .certificate { margin: 10mm auto; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Authentication Screen -->
+<section id="authScreen">
+  <div class="auth-head">
+    <div style="font-size:54px">⚡💻</div>
+    <div style="font-weight:900;letter-spacing:1px">SMART TECH QUEST PRO</div>
+    <div style="color:#c9e5ff;font-size:12px">GERBANG LOGIN PESERTA DIDIK</div>
+  </div>
+  <div class="auth-card">
+    <div style="text-align:center;font-size:36px">🚀</div>
+    <h1 style="text-align:center">Selamat Datang, Tech Hero!</h1>
+    <p class="auth-note" style="text-align:center">Daftar akun terlebih dahulu atau login untuk mengakses seluruh misi pembelajaran.</p>
+    
+    <div class="auth-tabs">
+      <button id="tabLogin" class="active" onclick="authMode('login')">🔐 Login</button>
+      <button id="tabRegister" onclick="authMode('register')">✨ Daftar Akun</button>
+    </div>
+    
+    <div id="registerFields" class="hidden">
+      <div class="auth-field">
+        <label>Nama lengkap</label>
+        <input id="regName" maxlength="60" autocomplete="name" placeholder="Nama lengkap siswa">
+      </div>
+      <div class="auth-field">
+        <label>Kelas</label>
+        <select id="regClass">
+          <option>VII</option>
+          <option>VIII</option>
+          <option>IX</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="auth-field">
+      <label>Username</label>
+      <input id="authUser" maxlength="24" autocomplete="username" placeholder="Buat username (tanpa spasi)">
+    </div>
+    <div class="auth-field">
+      <label>Password</label>
+      <input id="authPass" type="password" minlength="6" autocomplete="current-password" placeholder="Minimal 6 karakter">
+    </div>
+    
+    <div id="authError" class="auth-error" role="alert"></div>
+    <button id="authSubmit" class="btn primary" style="width:100%;margin-top:12px" onclick="submitAuth()">Masuk ke Aplikasi →</button>
+    
+    <p class="auth-note" style="margin-top:15px">Gunakan nama dan akun milik sendiri. Jangan membagikan password kepada teman.</p>
+  </div>
+</section>
+
+<!-- Main Application Shell -->
+<div id="appShell">
+  <div class="wrap">
+    
+    <header class="top">
+      <div class="brand">
+        <div class="logo">⚡</div>
+        <div>
+          <b>SMART TECH QUEST PRO</b>
+          <small>GIM EDUKASI INFORMATIKA • BAB 2</small>
+        </div>
+      </div>
+      <div class="topstats">
+        <div class="chip">⭐ <span id="xpTop">0</span> XP</div>
+        <div class="chip">🏅 Level <span id="levelTop">1</span></div>
+        <button class="chip" onclick="logoutStudent()" style="cursor:pointer">Keluar ↗</button>
+      </div>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">MTs MUHAMMADIYAH SMART KOTA GORONTALO</div>
+          <h1>Jadilah <span>Tech Hero!</span></h1>
+          <p>Jelajahi dunia sistem komputer, pecahkan tantangan HOTS, naikkan level, raih XP, dan bersaing secara sehat di leaderboard kelas.</p>
+          <div class="actions">
+            <button class="btn primary" onclick="openProfile()">🎮 Mulai Petualangan</button>
+            <button class="btn gold" onclick="show('leader')">🏆 Lihat Leaderboard</button>
+          </div>
+        </div>
+        <div class="heroart">🖥️</div>
+      </div>
+      
+      <div class="stats">
+        <div class="stat"><b id="xpStat">0 ⭐</b><small>Total XP</small></div>
+        <div class="stat"><b id="levelStat">Level 1</b><small>Pangkat Tech Hero</small></div>
+        <div class="stat"><b id="bestStat">-</b><small>Skor terbaik</small></div>
+        <div class="stat"><b id="doneStat">0/6</b><small>Misi selesai</small></div>
+      </div>
+      
+      <div class="panel">
+        <div class="sectionhead">
+          <div>
+            <h2>🚀 Pusat Misi</h2>
+            <div class="muted">Pilih tantangan yang ingin kamu selesaikan.</div>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="card">
+            <div class="emoji">📚</div>
+            <h3>Zona Materi</h3>
+            <p>Pelajari enam komponen utama sistem komputer melalui ringkasan interaktif.</p>
+            <button class="btn primary" onclick="show('learn')">Buka Materi</button>
+          </div>
+          <div class="card">
+            <div class="emoji">🧠</div>
+            <h3>HOTS Challenge</h3>
+            <p>15 soal berbasis kasus untuk melatih analisis, evaluasi, dan pengambilan keputusan.</p>
+            <button class="btn primary" onclick="startQuiz()">Mulai Tantangan</button>
+          </div>
+          <div class="card">
+            <div class="emoji">🏅</div>
+            <h3>Sertifikat Digital</h3>
+            <p>Dapatkan sertifikat setelah menyelesaikan tantangan dengan nilai minimal 70.</p>
+            <button class="btn gold" onclick="openCertificate()">Lihat Sertifikat</button>
+          </div>
+          <div class="card">
+            <div class="emoji">🧩</div>
+            <h3>Studio Mini Game</h3>
+            <p>Susun gambar perangkat, hindari rintangan, dan uji ingatanmu lewat permainan seru.</p>
+            <button class="btn primary" onclick="openArcade()">Mainkan Game</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="panel hidden">
+      <div class="sectionhead">
+        <div>
+          <h2>👤 Identitas Pemain</h2>
+          <div class="muted">Isi nama dan kelas untuk menyimpan hasil permainan.</div>
+        </div>
+        <button class="btn soft" onclick="show('home')">← Kembali</button>
+      </div>
+      <div class="formgrid">
+        <div class="field">
+          <label>Nama siswa</label>
+          <input id="studentName" maxlength="60" placeholder="Masukkan nama siswa">
+        </div>
+        <div class="field">
+          <label>Kelas</label>
+          <select id="studentClass">
+            <option>VII</option>
+            <option>VIII</option>
+            <option>IX</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label>Pilih avatar</label>
+        <div class="avatars" id="avatars"></div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" onclick="saveProfile()">Simpan & Mulai</button>
+      </div>
+      <p class="muted" style="margin-top:15px">Gunakan nama panggilan atau kode siswa bila tidak ingin menampilkan nama lengkap di papan peringkat.</p>
+    </section>
+
+    <!-- Learning Section -->
+    <section id="learn" class="panel hidden">
+      <div class="sectionhead">
+        <div>
+          <h2>📚 Zona Materi</h2>
+          <div class="muted">Ringkasan berdasarkan bahan ajar BAB 2 Sistem Komputer.</div>
+        </div>
+        <button class="btn soft" onclick="show('home')">← Beranda</button>
+      </div>
+      <div class="grid" id="lessonGrid"></div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz" class="panel hidden">
+      <div class="sectionhead">
+        <div>
+          <h2>🧠 HOTS Challenge</h2>
+          <div class="muted">15 soal • Analisis kasus • 10 XP untuk setiap jawaban benar.</div>
+        </div>
+        <button class="btn soft" onclick="show('home')">Keluar Kuis</button>
+      </div>
+      <div id="quizArea"></div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section id="leader" class="panel hidden">
+      <div class="sectionhead">
+        <div>
+          <h2>🏆 Leaderboard Antarsiswa</h2>
+          <div class="muted">Peringkat berdasarkan skor terbaik.</div>
+        </div>
+        <button class="btn soft" onclick="show('home')">← Beranda</button>
+      </div>
+      <div class="actions">
+        <button class="btn primary" onclick="loadLeaderboard()">↻ Perbarui Peringkat</button>
+      </div>
+      <div id="leaderStatus" class="muted" style="margin:12px 0">Memuat data…</div>
+      <div style="overflow:auto">
+        <table class="table">
+          <thead>
+            <tr><th>Rank</th><th>Nama</th><th>Kelas</th><th>Skor</th><th>Level</th></tr>
+          </thead>
+          <tbody id="leaderRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Arcade Section -->
+    <section id="arcade" class="panel hidden">
+      <div class="sectionhead">
+        <div>
+          <h2>🕹️ SMART ARCADE</h2>
+          <div class="muted">Belajar sistem komputer sambil bermain. Setiap game memberi XP.</div>
+        </div>
+        <button class="btn soft" onclick="show('home')">← Beranda</button>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="emoji">🧩</div>
+          <h3>Susun Gambar Komputer</h3>
+          <p>Cocokkan ikon perangkat dengan nama dan fungsinya.</p>
+          <button class="btn primary" onclick="startPictureGame()">Mulai</button>
+        </div>
+        <div class="card">
+          <div class="emoji">🏃</div>
+          <h3>Tech Runner</h3>
+          <p>Lompat melewati rintangan. Tekan spasi, tombol panah atas, atau klik layar.</p>
+          <button class="btn primary" onclick="startRunner()">Mulai</button>
+        </div>
+        <div class="card">
+          <div class="emoji">🧠</div>
+          <h3>Memory Match</h3>
+          <p>Buka kartu dan temukan pasangan istilah komputer.</p>
+          <button class="btn primary" onclick="startMemory()">Mulai</button>
+        </div>
+      </div>
+      <div id="arcadeArea" class="gameboard">
+        <h3>🎮 Pilih salah satu game di atas untuk memulai!</h3>
+        <p class="muted">Selesaikan tantangan untuk memperoleh XP tambahan.</p>
+      </div>
+    </section>
+
+    <!-- Certificate Section -->
+    <section id="certPanel" class="panel hidden">
+      <div class="sectionhead no-print">
+        <div>
+          <h2>🎓 Sertifikat Digital</h2>
+          <div class="muted">Sertifikat dapat dicetak atau disimpan sebagai PDF.</div>
+        </div>
+        <button class="btn soft" onclick="show('home')">← Beranda</button>
+      </div>
+      <div class="certificate" id="certificate">
+        <div style="font-size:48px">🏆</div>
+        <div style="letter-spacing:4px;color:#9b7410;font-weight:bold;margin-bottom:10px;">MTs MUHAMMADIYAH SMART KOTA GORONTALO</div>
+        <h1>SERTIFIKAT PENCAPAIAN</h1>
+        <p>Diberikan kepada</p>
+        <div class="certname" id="certName">Nama Siswa</div>
+        <p>Atas keberhasilannya menyelesaikan tantangan GIM EDUKASI INFORMATIKA<br><b>“SMART TECH QUEST PRO — BAB 2 SISTEM KOMPUTER”</b></p>
+        <p>Dengan nilai <b id="certScore">0</b> dan mencapai <b id="certLevel">Level 1</b>.</p>
+        <div style="display:flex;justify-content:space-between;margin-top:45px;text-align:center">
+          <div>Peserta Didik<br><br><br><b id="certName2">Nama Siswa</b></div>
+          <div>Guru Informatika<br><br><br><b>Alpian Usman, S.Pd., M.Si</b></div>
+        </div>
+      </div>
+      <div class="actions no-print" style="justify-content:center; margin-top:20px;">
+        <button class="btn primary" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+      </div>
+    </section>
+
+    <div class="footer">
+      SMART TECH QUEST PRO • Media Pembelajaran Informatika<br>
+      Pengembang: <strong>Alpian Usman, S.Pd., M.Si</strong><br>
+      Guru Informatika MTs Muhammadiyah SMART Kota Gorontalo
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /** ==========================================
+   *  CONFIGURATION & GLOBAL STATE
+   *  ========================================== */
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbzd3-wr9L5CsAtec4LnBSQR4-K2NLAZLKsWJtVmjToxzwhUoPTP_vIC9OO7B9l5iSwWAA/exec'; // Tempel URL Web App Google Apps Script di sini. Jika kosong, aplikasi berjalan 100% offline.
+  const AUTH_SESSION_KEY = 'stq_auth_session';
+  const AVATARS = ['🧑‍💻','👩‍💻','🧑‍🚀','👩‍🚀','🤖','🦊','🐼','🐯','🐸','🐱','🦁','🐵'];
+  
+  let authModeNow = 'login';
+  let profile = JSON.parse(localStorage.getItem('stq_profile') || 'null');
+  let xp = Number(localStorage.getItem('stq_xp') || 0);
+  let best = Number(localStorage.getItem('stq_best') || 0);
+  let lastScore = Number(localStorage.getItem('stq_last') || 0);
+  let done = JSON.parse(localStorage.getItem('stq_done') || '{}');
+  let avatar = profile?.avatar || '🧑‍💻';
+
+  // Game specific states for cleanup
+  let runnerTimer = null;
+  let runnerActive = false;
+
+  /** ==========================================
+   *  UTILITIES & HELPERS
+   *  ========================================== */
+  function escapeHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  
+  function level() {
+    return Math.floor(xp / 100) + 1;
+  }
+  
+  function saveState() {
+    localStorage.setItem('stq_xp', xp);
+    localStorage.setItem('stq_best', best);
+    localStorage.setItem('stq_last', lastScore);
+    localStorage.setItem('stq_done', JSON.stringify(done));
+    updateUI();
+  }
+
+  /** ==========================================
+   *  AUTHENTICATION SYSTEM
+   *  ========================================== */
+  function authMode(mode) {
+    authModeNow = mode;
+    document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
+    document.getElementById('tabRegister').classList.toggle('active', mode === 'register');
+    document.getElementById('registerFields').classList.toggle('hidden', mode !== 'register');
+    document.getElementById('authSubmit').textContent = mode === 'register' ? 'Buat Akun & Mulai →' : 'Masuk ke Aplikasi →';
+    document.getElementById('authError').textContent = '';
+  }
+
+  async function sha256(text) {
+    const data = new TextEncoder().encode(text);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Fallback to local storage if no server is configured
+  async function simulateLocalAuth(action, username, passwordHash, name, kelas) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const users = JSON.parse(localStorage.getItem('stq_local_users') || '{}');
+        
+        if (action === 'register') {
+          if (users[username]) {
+            resolve({ ok: false, error: 'Username sudah digunakan.' });
+          } else {
+            users[username] = { username, passwordHash, name, kelas };
+            localStorage.setItem('stq_local_users', JSON.stringify(users));
+            resolve({ ok: true, user: users[username], token: 'local_token_reg' });
+          }
+        } else { // Login
+          const user = users[username];
+          if (!user) {
+            resolve({ ok: false, error: 'Username tidak ditemukan.' });
+          } else if (user.passwordHash !== passwordHash) {
+            resolve({ ok: false, error: 'Password salah.' });
+          } else {
+            resolve({ ok: true, user: user, token: 'local_token_login' });
+          }
+        }
+      }, 500); // Simulate network delay
+    });
+  }
+
+  function authRequest(params) {
+    if (!GAS_URL) {
+      // OVERRIDE: Jika GAS_URL kosong, gunakan mock sistem agar aplikasi tetap berfungsi (Offline Mode)
+      return simulateLocalAuth(params.action, params.username, params.passwordHash, params.name, params.kelas);
+    }
+    
+    return new Promise((resolve, reject) => {
+      const cb = 'stqauth_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const script = document.createElement('script');
+      const timer = setTimeout(() => {
+        cleanup();
+        reject(new Error('Server tidak merespons. Periksa koneksi internet.'));
+      }, 15000);
+      
+      function cleanup() {
+        clearTimeout(timer);
+        delete window[cb];
+        script.remove();
+      }
+      
+      window[cb] = data => { cleanup(); resolve(data); };
+      script.onerror = () => { cleanup(); reject(new Error('Tidak dapat menghubungi server.')); };
+      script.src = GAS_URL + '?' + new URLSearchParams({ ...params, callback: cb }).toString();
+      document.body.appendChild(script);
+    });
+  }
+
+  async function submitAuth() {
+    const btn = document.getElementById('authSubmit');
+    const err = document.getElementById('authError');
+    const username = document.getElementById('authUser').value.trim().toLowerCase();
+    const password = document.getElementById('authPass').value;
+    
+    err.textContent = '';
+    
+    if (!/^[a-z0-9._-]{3,24}$/.test(username)) {
+      err.textContent = 'Username 3–24 karakter: huruf kecil, angka, titik, garis bawah, atau strip.';
+      return;
+    }
+    if (password.length < 6) {
+      err.textContent = 'Password minimal 6 karakter.';
+      return;
+    }
+    
+    const regName = document.getElementById('regName').value.trim();
+    if (authModeNow === 'register' && !regName) {
+      err.textContent = 'Nama lengkap wajib diisi.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Memproses…';
+    
+    try {
+      const passwordHash = await sha256(password);
+      let data;
+      
+      if (authModeNow === 'register') {
+        const regClass = document.getElementById('regClass').value;
+        data = await authRequest({ action: 'register', username, passwordHash, name: regName, kelas: regClass });
+      } else {
+        data = await authRequest({ action: 'login', username, passwordHash });
+      }
+      
+      if (!data || !data.ok) throw new Error(data?.error || 'Autentikasi gagal.');
+      
+      const user = data.user;
+      localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify({
+        username: user.username,
+        name: user.name,
+        kelas: user.kelas,
+        token: data.token,
+        at: Date.now()
+      }));
+      
+      // Update global profile
+      profile = { name: user.name, kelas: user.kelas, avatar: '🧑‍💻' };
+      localStorage.setItem('stq_profile', JSON.stringify(profile));
+      
+      document.getElementById('authScreen').style.display = 'none';
+      document.getElementById('appShell').style.display = 'block';
+      updateUI();
+      show('home');
+      
+    } catch (e) {
+      err.textContent = e.message || 'Terjadi kesalahan sistem.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = authModeNow === 'register' ? 'Buat Akun & Mulai →' : 'Masuk ke Aplikasi →';
+    }
+  }
+
+  function restoreAuth() {
+    try {
+      const session = JSON.parse(localStorage.getItem(AUTH_SESSION_KEY) || 'null');
+      if (!session || !session.token || (Date.now() - session.at > 7 * 24 * 60 * 60 * 1000)) return;
+      
+      // Valid session
+      profile = { name: session.name, kelas: session.kelas, avatar: profile?.avatar || '🧑‍💻' };
+      localStorage.setItem('stq_profile', JSON.stringify(profile));
+      
+      document.getElementById('authScreen').style.display = 'none';
+      document.getElementById('appShell').style.display = 'block';
+    } catch (e) { console.error("Restore auth error", e); }
+  }
+
+  function logoutStudent() {
+    if (!confirm('Yakin ingin keluar dari sesi ini?')) return;
+    localStorage.removeItem(AUTH_SESSION_KEY);
+    // Don't clear stq_profile entirely to preserve avatar, but require relogin
+    document.getElementById('appShell').style.display = 'none';
+    document.getElementById('authScreen').style.display = 'block';
+    
+    // Clear inputs
+    document.getElementById('authPass').value = '';
+    authMode('login');
+  }
+
+
+  /** ==========================================
+   *  UI NAVIGATION & UPDATES
+   *  ========================================== */
+  function updateUI() {
+    document.getElementById('xpTop').textContent = xp;
+    document.getElementById('xpStat').textContent = xp + ' ⭐';
+    document.getElementById('levelTop').textContent = level();
+    document.getElementById('levelStat').textContent = 'Level ' + level();
+    document.getElementById('bestStat').textContent = best ? best + '/100' : '-';
+    
+    const completedMissions = ['learn', 'quiz', 'cert', 'picture', 'runner', 'memory'].filter(k => done[k]).length;
+    document.getElementById('doneStat').textContent = completedMissions + '/6';
+  }
+
+  // Cleanup function for games when navigating away
+  function cleanupArcade() {
+    if (runnerTimer) {
+      clearInterval(runnerTimer);
+      runnerTimer = null;
+    }
+    runnerActive = false;
+    if (window.runnerKey) {
+      document.removeEventListener('keydown', window.runnerKey);
+    }
+    document.getElementById('arcadeArea').innerHTML = `
+      <h3>🎮 Pilih salah satu game di atas untuk memulai!</h3>
+      <p class="muted">Selesaikan tantangan untuk memperoleh XP tambahan.</p>
+    `;
+  }
+
+  function show(id) {
+    if (id !== 'arcade') cleanupArcade(); // Prevent memory leaks from games
+    
+    const panels = ['home', 'profile', 'learn', 'quiz', 'leader', 'arcade', 'certPanel'];
+    panels.forEach(x => {
+      document.getElementById(x).classList.toggle('hidden', x !== id);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateUI();
+  }
+
+
+  /** ==========================================
+   *  PROFILE MANAGEMENT
+   *  ========================================== */
+  function openProfile() {
+    show('profile');
+    document.getElementById('studentName').value = profile?.name || '';
+    document.getElementById('studentClass').value = profile?.kelas || 'VII';
+    avatar = profile?.avatar || '🧑‍💻';
+    
+    document.getElementById('avatars').innerHTML = AVATARS.map(a => 
+      `<button class="av ${a === avatar ? 'active' : ''}" onclick="chooseAvatar('${a}', this)">${a}</button>`
+    ).join('');
+  }
+
+  function chooseAvatar(a, btnEl) {
+    avatar = a;
+    document.querySelectorAll('.av').forEach(x => x.classList.remove('active'));
+    btnEl.classList.add('active');
+  }
+
+  function saveProfile() {
+    let name = document.getElementById('studentName').value.trim();
+    if (!name) { alert('Silakan isi nama atau kode siswa.'); return; }
+    
+    profile = { name, kelas: document.getElementById('studentClass').value, avatar };
+    localStorage.setItem('stq_profile', JSON.stringify(profile));
+    show('home');
+  }
+
+
+  /** ==========================================
+   *  LEARNING ZONE (MATERI)
+   *  ========================================== */
+  const topics = [
+    ['🧠', 'CPU, ALU dan CU', 'CPU atau prosesor adalah pusat pengolahan data dan pengontrol kerja komputer. ALU mengolah data seperti perhitungan matematika, sedangkan CU mengatur urutan proses komputer.'],
+    ['💾', 'Memori RAM dan ROM', 'RAM menyimpan program dan data sementara saat program dijalankan. ROM menyimpan perintah dan data secara tetap; komputer tidak dapat mengubah isi ROM tersebut.'],
+    ['🧩', 'Motherboard', 'Disebut juga mainboard. Menjadi tempat perangkat internal seperti prosesor, memori, kartu grafis, kartu suara, dan LAN card. Motherboard menyediakan jalur koneksi (bus) antarperangkat.'],
+    ['🎨', 'Kartu Grafis (VGA)', 'Mengubah sinyal digital menjadi gambar dalam bentuk piksel agar dapat ditampilkan di monitor. Kualitas gambar dipengaruhi GPU dan kapasitas memori kartu grafis.'],
+    ['🔊', 'Kartu Suara', 'Mengubah sinyal digital menjadi analog (suara) dan sebaliknya. Suara dapat didengar melalui speaker atau direkam menggunakan mikrofon. Jenisnya standar, onboard, dan eksternal.'],
+    ['🗄️', 'HDD dan SSD', 'HDD menggunakan piringan yang berputar. SSD menggunakan memori elektronik dan bersifat non-volatile, sehingga data tidak hilang ketika komputer dimatikan.']
+  ];
+
+  function renderLessons() {
+    document.getElementById('lessonGrid').innerHTML = topics.map(t => 
+      `<article class="card"><div class="emoji">${t[0]}</div><h3>${escapeHtml(t[1])}</h3><p>${escapeHtml(t[2])}</p></article>`
+    ).join('');
+  }
+
+
+  /** ==========================================
+   *  QUIZ SYSTEM (HOTS CHALLENGE)
+   *  ========================================== */
+  const qs = [
+    {case:'Raka membuka aplikasi desain, browser, dan pengolah kata secara bersamaan. Ketika kapasitas memori sementara terbatas, komputer terasa lambat saat berpindah aplikasi.',q:'Komponen yang paling langsung berkaitan dengan penyimpanan sementara program yang sedang berjalan adalah …',a:['ROM','RAM','SSD','Kartu suara'],c:1,why:'RAM menyimpan program dan data sementara ketika program dijalankan.'},
+    {case:'Saat komputer dinyalakan, ada perintah dasar yang tetap tersimpan dan digunakan untuk membantu proses awal komputer. Perintah tersebut tidak berubah saat komputer dimatikan.',q:'Jenis memori yang paling sesuai dengan karakteristik tersebut adalah …',a:['RAM','Cache','ROM','HDD'],c:2,why:'ROM menyimpan perintah dan data secara tetap.'},
+    {case:'Sebuah komputer baru dirakit. Prosesor, RAM, kartu grafis, dan perangkat lain harus terhubung agar dapat saling bertukar data.',q:'Komponen yang menjadi tempat pemasangan perangkat internal sekaligus menyediakan jalur koneksi (bus) adalah …',a:['Motherboard','GPU','SSD','Sound card'],c:0,why:'Motherboard menjadi tempat perangkat internal dan menyediakan jalur koneksi (bus).'},
+    {case:'Nadia mengedit video. Hasil tampilan pratinjau terlihat patah-patah ketika efek visual kompleks digunakan. Komputer tersebut memiliki kartu grafis dengan kemampuan pemrosesan terbatas.',q:'Bagian kartu grafis yang kemampuan pemrosesannya perlu diperhatikan adalah …',a:['ALU','ROM','GPU','CU'],c:2,why:'GPU (Graphics Processing Unit) merupakan prosesor pada kartu grafis yang memengaruhi kualitas gambar.'},
+    {case:'Guru memutar audio pembelajaran melalui speaker. Di kesempatan lain, siswa merekam penjelasan menggunakan mikrofon dan menyimpannya sebagai file audio.',q:'Perangkat yang memungkinkan proses konversi sinyal suara digital dan analog adalah …',a:['Kartu grafis','Kartu suara','Motherboard','RAM'],c:1,why:'Sound card mengubah sinyal digital menjadi analog dan sebaliknya.'},
+    {case:'Laboratorium ingin meningkatkan kecepatan komputer saat membuka sistem operasi dan aplikasi. Teknisi membandingkan HDD dengan SSD.',q:'Jika prioritas utama adalah kecepatan akses data, pilihan yang lebih sesuai berdasarkan materi adalah …',a:['HDD','RAM','ROM','SSD'],c:3,why:'Dalam materi, SSD dibandingkan HDD sebagai media yang lebih cepat.'},
+    {case:'Dina menghitung data nilai. Komputer melakukan operasi penjumlahan dan perbandingan angka sebelum hasil ditampilkan.',q:'Bagian CPU yang menjalankan operasi aritmetika dan logika adalah …',a:['Control Unit','ALU','ROM','GPU'],c:1,why:'ALU adalah pusat pengolahan data seperti perhitungan matematika.'},
+    {case:'Ketika menjalankan instruksi, komputer perlu mengatur urutan kerja komponen agar proses berlangsung sesuai perintah.',q:'Bagian CPU yang bertugas mengontrol dan mengatur urutan proses adalah …',a:['ALU','GPU','Control Unit','RAM'],c:2,why:'Control Unit mengontrol kerja komputer dan mengatur urutan proses.'},
+    {case:'Sebuah komputer menampilkan gambar dari data digital ke layar monitor. Kartu grafis memproses data tersebut menjadi susunan piksel.',q:'Urutan proses yang paling tepat adalah …',a:['Data digital → GPU → gambar/piksel → monitor','Monitor → RAM → mikrofon → gambar','ROM → speaker → GPU → keyboard','SSD → suara analog → monitor'],c:0,why:'GPU pada kartu grafis memproses data digital menjadi gambar berbentuk piksel untuk monitor.'},
+    {case:'Siswa ingin menambahkan kartu suara yang dapat dipasang tanpa memasang kartu ekspansi di dalam casing. Perangkat yang dipilih terhubung melalui USB.',q:'Jenis kartu suara tersebut adalah …',a:['Standar','Onboard','Internal ROM','Eksternal'],c:3,why:'Kartu suara eksternal dapat dihubungkan ke komputer melalui port USB.'},
+    {case:'Sebuah motherboard dirancang untuk prosesor dengan merek dan seri tertentu. Seorang teknisi ingin memasang prosesor yang tidak didukung oleh rancangan motherboard.',q:'Kesimpulan paling tepat sebelum pemasangan adalah …',a:['Semua prosesor pasti cocok','Kesesuaian motherboard dan prosesor perlu diperiksa','RAM akan mengubah jenis soket','Kartu suara menentukan kompatibilitas'],c:1,why:'Materi menjelaskan motherboard didesain untuk prosesor dengan merek dan seri tertentu.'},
+    {case:'Komputer laboratorium sering dimatikan setelah kegiatan. Guru ingin file tetap tersimpan meskipun daya komputer terputus.',q:'Sifat media penyimpanan yang dibutuhkan disebut …',a:['Volatile','Analog','Non-volatile','Aritmetika'],c:2,why:'Non-volatile berarti data tidak hilang ketika komputer dimatikan.'},
+    {case:'Fajar ingin merekam suara narasumber. Ia menghubungkan mikrofon ke komputer, kemudian hasil rekaman disimpan sebagai file audio.',q:'Perangkat input yang digunakan Fajar adalah …',a:['Speaker','Mikrofon','Monitor','Kartu grafis'],c:1,why:'Mikrofon merupakan perangkat input untuk merekam suara dari luar.'},
+    {case:'Sebuah komputer memiliki HDD dan SSD. HDD menggunakan piringan yang berputar, sedangkan SSD menyimpan data secara elektronik dalam chip memori.',q:'Pernyataan evaluasi yang tepat adalah …',a:['Keduanya tidak dapat menyimpan data','SSD menggunakan piringan berputar','HDD dan SSD sama-sama media penyimpanan, tetapi teknologinya berbeda','HDD adalah jenis kartu suara'],c:2,why:'HDD dan SSD sama-sama media penyimpanan internal, tetapi cara penyimpanannya berbeda.'},
+    {case:'Komputer dapat mengeluarkan suara melalui speaker dan merekam suara melalui mikrofon. Keduanya memerlukan pengolahan sinyal audio.',q:'Mengapa kartu suara penting dalam kasus tersebut?',a:['Karena menghubungkan semua perangkat internal sebagai bus','Karena mengolah konversi sinyal digital dan analog audio','Karena menyimpan perintah tetap','Karena mengubah data menjadi piksel'],c:1,why:'Sound card menangani konversi sinyal digital dan analog sehingga komputer dapat memutar dan merekam audio.'}
+  ];
+
+  function startQuiz() {
+    if (!profile) { openProfile(); alert('Lengkapi identitas pemain terlebih dahulu.'); return; }
+    show('quiz');
+    
+    let i = 0, score = 0, locked = false;
+    let order = [...qs].sort(() => Math.random() - 0.5);
+    
+    function drawQuestion() {
+      locked = false;
+      let q = order[i];
+      
+      document.getElementById('quizArea').innerHTML = `
+        <div class="muted" style="display:flex;justify-content:space-between">
+          <b>SOAL ${i + 1} DARI 15</b>
+          <b>⭐ ${score} poin</b>
+        </div>
+        <div class="progress"><span style="width:${(i / 15) * 100}%"></span></div>
+        <div class="stimulus"><b>📌 Situasi:</b> ${escapeHtml(q.case)}</div>
+        <div class="question">${escapeHtml(q.q)}</div>
+        <div class="answers">
+          ${q.a.map((ans, n) => `<button class="answer" data-n="${n}">${String.fromCharCode(65 + n)}. ${escapeHtml(ans)}</button>`).join('')}
+        </div>
+        <div id="feedback"></div>
+      `;
+      
+      document.querySelectorAll('.answer').forEach(b => {
+        b.onclick = () => {
+          if (locked) return;
+          locked = true;
+          
+          let selectedN = Number(b.dataset.n);
+          let isOk = selectedN === q.c;
+          
+          // Disable all buttons visually
+          document.querySelectorAll('.answer').forEach(btn => btn.disabled = true);
+          
+          if (isOk) {
+            score += Math.round(100 / 15);
+            xp += 10;
+            b.classList.add('ok');
+          } else {
+            b.classList.add('no');
+            document.querySelectorAll('.answer')[q.c].classList.add('ok');
+          }
+          
+          document.getElementById('feedback').innerHTML = `
+            <div class="feedback ${isOk ? 'good' : 'bad'}">
+              ${isOk ? '✅ Tepat! +10 XP' : '💡 Belum tepat.'} ${escapeHtml(q.why)}
+            </div>
+            <div class="actions">
+              <button class="btn primary" id="nextBtn">${i === 14 ? 'Selesaikan Tantangan' : 'Soal Berikutnya →'}</button>
+            </div>
+          `;
+          
+          saveState();
+          
+          document.getElementById('nextBtn').onclick = () => {
+            i++;
+            if (i < 15) drawQuestion();
+            else finishQuiz(Math.min(100, Math.round(score)));
+          };
+        };
+      });
+    }
+    
+    drawQuestion();
+  }
+
+  function finishQuiz(finalScore) {
+    lastScore = finalScore;
+    best = Math.max(best, finalScore);
+    done.quiz = true;
+    if (finalScore >= 70) done.cert = true;
+    
+    saveState();
+    sendScoreToBackend(finalScore);
+    
+    document.getElementById('quizArea').innerHTML = `
+      <div style="text-align:center;padding:25px">
+        <div style="font-size:70px">${finalScore >= 85 ? '🏆' : finalScore >= 70 ? '🎉' : '💪'}</div>
+        <h2>Tantangan Selesai!</h2>
+        <div style="font-size:48px;color:#0878e8;font-weight:1000">${finalScore}/100</div>
+        <p>${finalScore >= 85 ? 'Luar biasa! Kamu Tech Hero unggulan.' : finalScore >= 70 ? 'Bagus! Kamu memenuhi syarat sertifikat.' : 'Terus berlatih dan coba lagi untuk meraih sertifikat.'}</p>
+        <div class="actions" style="justify-content:center">
+          <button class="btn primary" onclick="show('home')">Beranda</button>
+          ${finalScore >= 70 ? '<button class="btn gold" onclick="openCertificate()">Ambil Sertifikat</button>' : ''}
+          <button class="btn soft" onclick="startQuiz()">Ulangi Kuis</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function sendScoreToBackend(scoreValue) {
+    if (!GAS_URL) {
+      console.warn('Mode Offline: GAS_URL belum diatur. Skor hanya tersimpan di perangkat ini.');
+      return;
+    }
+    let data = {
+      name: profile.name, kelas: profile.kelas, avatar: profile.avatar,
+      score: scoreValue, xp: xp, level: level(), playedAt: new Date().toISOString()
+    };
+    let body = new URLSearchParams({ data: JSON.stringify(data) });
+    
+    fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body })
+      .then(() => console.log('Permintaan rekap dikirim ke server'))
+      .catch(e => console.error('Gagal mengirim skor:', e));
+  }
+
+
+  /** ==========================================
+   *  LEADERBOARD
+   *  ========================================== */
+  function loadLeaderboard() {
+    let status = document.getElementById('leaderStatus');
+    let tbody = document.getElementById('leaderRows');
+    
+    if (!GAS_URL) {
+      status.textContent = 'Mode Offline: Leaderboard global tidak tersedia. Atur GAS_URL pada file HTML untuk mengaktifkan.';
+      tbody.innerHTML = `
+        <tr>
+          <td class="rank">#1</td>
+          <td>${escapeHtml(profile?.name || 'Pemain (Anda)')}</td>
+          <td>${escapeHtml(profile?.kelas || '-')}</td>
+          <td><b>${best}</b></td>
+          <td>Level ${level()}</td>
+        </tr>
+      `;
+      return;
+    }
+    
+    status.textContent = 'Mengambil peringkat dari server...';
+    let cb = 'stqcb_' + Date.now();
+    
+    window[cb] = data => {
+      delete window[cb];
+      status.textContent = 'Peringkat terbaru berhasil dimuat.';
+      tbody.innerHTML = (data.rows || []).map((r, i) => 
+        `<tr>
+          <td class="rank">#${i + 1}</td>
+          <td>${escapeHtml(r.name)}</td>
+          <td>${escapeHtml(r.kelas)}</td>
+          <td><b>${r.score}</b></td>
+          <td>Level ${r.level}</td>
+        </tr>`
+      ).join('') || '<tr><td colspan="5">Belum ada hasil yang terekam.</td></tr>';
+    };
+    
+    let s = document.createElement('script');
+    s.src = GAS_URL + '?action=leaderboard&callback=' + cb;
+    s.onerror = () => { status.textContent = 'Gagal memuat leaderboard. Periksa koneksi atau URL Apps Script.'; };
+    document.body.appendChild(s);
+  }
+
+
+  /** ==========================================
+   *  CERTIFICATE
+   *  ========================================== */
+  function openCertificate() {
+    if (!profile) { openProfile(); alert('Isi identitas pemain terlebih dahulu.'); return; }
+    if (lastScore < 70) { alert('Sertifikat terbuka setelah memperoleh nilai minimal 70 pada kuis.'); return; }
+    
+    document.getElementById('certName').textContent = profile.name;
+    document.getElementById('certName2').textContent = profile.name;
+    document.getElementById('certScore').textContent = lastScore + '/100';
+    document.getElementById('certLevel').textContent = 'Level ' + level();
+    show('certPanel');
+  }
+
+
+  /** ==========================================
+   *  ARCADE GAMES
+   *  ========================================== */
+  function openArcade() {
+    if (!profile) { openProfile(); alert('Isi identitas pemain terlebih dahulu.'); return; }
+    show('arcade');
+  }
+
+  function awardGame(points, label) {
+    xp += points;
+    done[label] = true;
+    saveState();
+    let msg = document.getElementById('gameFeedback');
+    if (msg) msg.innerHTML = `<div class="feedback good">🎉 Hebat! +${points} XP berhasil ditambahkan ke profilmu.</div>`;
+  }
+
+  // --- 1. Picture Match Game ---
+  const pictureItems = [
+    ['🖥️','Monitor','Menampilkan informasi visual'],
+    ['⌨️','Keyboard','Memasukkan teks dan perintah'],
+    ['🖱️','Mouse','Menggerakkan pointer dan memilih objek'],
+    ['🎤','Mikrofon','Memasukkan suara'],
+    ['🔊','Speaker','Mengeluarkan suara'],
+    ['💾','SSD','Menyimpan data secara permanen']
+  ];
+
+  function startPictureGame() {
+    cleanupArcade();
+    let items = [...pictureItems].sort(() => Math.random() - 0.5);
+    let chosen = null;
+    let score = 0;
+    let area = document.getElementById('arcadeArea');
+    
+    area.innerHTML = `
+      <h3>🧩 Susun Gambar Komputer</h3>
+      <p>Pilih ikon berwarna, lalu pilih nama perangkat yang sesuai. Tombol akan berubah hijau jika benar.</p>
+      <div class="picture-grid" id="pictureIcons">
+        ${items.map((x, i) => `<button class="picture-piece" id="pic${i}" onclick="pickPicture(${i})">${x[0]}</button>`).join('')}
+      </div>
+      <div class="game-options" id="pictureNames">
+        ${[...pictureItems].sort(() => Math.random() - 0.5).map(x => `<button class="game-tile" onclick="matchPicture('${escapeHtml(x[1])}', this)">${escapeHtml(x[1])}</button>`).join('')}
+      </div>
+      <p id="pictureStatus" class="muted" style="margin-top:15px; font-weight:bold;">Pasangan benar: 0 dari 6</p>
+      <div id="gameFeedback"></div>
+    `;
+
+    window.pickPicture = (i) => {
+      chosen = i;
+      document.querySelectorAll('.picture-piece').forEach(b => b.classList.remove('selected'));
+      document.getElementById('pic' + i).classList.add('selected');
+    };
+
+    window.matchPicture = (name, btn) => {
+      if (chosen === null) { alert('Pilih ikon perangkat terlebih dahulu (di bagian atas).'); return; }
+      
+      let x = items[chosen];
+      if (x[1] === name) {
+        document.getElementById('pic' + chosen).classList.add('done');
+        document.getElementById('pic' + chosen).disabled = true;
+        btn.classList.add('correct');
+        btn.disabled = true;
+        score++;
+        
+        document.getElementById('pictureStatus').textContent = `Pasangan benar: ${score} dari 6 — ${x[1]}: ${x[2]}`;
+        chosen = null;
+        
+        if (score === 6) {
+          awardGame(30, 'picture');
+          document.getElementById('pictureStatus').textContent = 'Misi selesai! Semua perangkat berhasil dicocokkan.';
+        }
+      } else {
+        btn.classList.add('wrong');
+        setTimeout(() => btn.classList.remove('wrong'), 550);
+        document.getElementById('pictureStatus').textContent = 'Belum tepat. Coba perhatikan fungsi perangkat tersebut.';
+        document.getElementById('pic' + chosen).classList.remove('selected');
+        chosen = null;
+      }
+    };
+  }
+
+  // --- 2. Tech Runner Game ---
+  function startRunner() {
+    cleanupArcade();
+    let who = profile?.name || 'player';
+    let runKey = 'stq_runner_' + String(who).toLowerCase().replace(/\W+/g, '_');
+    
+    if (localStorage.getItem(runKey) === 'yes') {
+      document.getElementById('arcadeArea').innerHTML = `
+        <h3>🏁 Tech Runner</h3>
+        <div class="feedback good">Permainan Tech Runner sudah pernah dimainkan pada perangkat ini untuk profil ini.</div>
+        <p class="muted">Kesempatan bermain hanya satu kali untuk mengumpulkan poin.</p>
+      `;
+      return;
+    }
+    
+    let runnerScore = 0;
+    runnerActive = true;
+    let area = document.getElementById('arcadeArea');
+    
+    area.innerHTML = `
+      <h3>🏃 Tech Runner: Rintangan Beruntun</h3>
+      <p>Hindari rintangan yang datang bertubi-tubi. Lompat dengan spasi, panah atas, atau klik kotak di bawah. Waktu bermain 20 detik.</p>
+      <div class="runner" id="runnerBoard" onclick="jumpRunner()">
+        <div class="runner-player">${profile?.avatar || '🧑‍💻'}</div>
+        <div class="runner-obstacle">🪨</div>
+        <div class="runner-obstacle">📦</div>
+        <div class="runner-obstacle">🚧</div>
+        <div class="runner-obstacle">⚡</div>
+        <div class="runner-obstacle">🛞</div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+        <p id="runnerStatus" style="font-weight:bold; margin:0;">Waktu: 20 detik • Lompatan: 0</p>
+        <button class="btn gold" onclick="jumpRunner()">⬆️ LOMPAT</button>
+      </div>
+      <div id="gameFeedback"></div>
+    `;
+    
+    let time = 20;
+    
+    window.jumpRunner = () => {
+      if (!runnerActive) return;
+      let b = document.getElementById('runnerBoard');
+      if (!b) return; // fail-safe
+      
+      b.classList.remove('jump');
+      void b.offsetWidth; // trigger reflow
+      b.classList.add('jump');
+      runnerScore++;
+      document.getElementById('runnerStatus').textContent = `Waktu: ${time} detik • Lompatan: ${runnerScore}`;
+    };
+    
+    window.runnerKey = (e) => {
+      if ((e.code === 'Space' || e.code === 'ArrowUp') && runnerActive) {
+        e.preventDefault();
+        jumpRunner();
+      }
+    };
+    
+    document.addEventListener('keydown', window.runnerKey);
+    
+    runnerTimer = setInterval(() => {
+      time--;
+      let st = document.getElementById('runnerStatus');
+      if (st) st.textContent = `Waktu: ${time} detik • Lompatan: ${runnerScore}`;
+      
+      if (time <= 0) {
+        clearInterval(runnerTimer);
+        runnerActive = false;
+        document.removeEventListener('keydown', window.runnerKey);
+        localStorage.setItem(runKey, 'yes');
+        
+        let board = document.getElementById('runnerBoard');
+        if (board) board.classList.add('paused');
+        
+        let pts = Math.min(25, Math.floor(runnerScore / 2) * 5);
+        if (st) st.textContent = `Waktu habis! Total lompatan: ${runnerScore}.`;
+        
+        if (runnerScore >= 4) {
+          awardGame(pts || 5, 'runner');
+        } else {
+          document.getElementById('gameFeedback').innerHTML = '<div class="feedback bad">Permainan selesai. Kamu butuh minimal 4 lompatan untuk mendapat XP.</div>';
+        }
+      }
+    }, 1000);
+  }
+
+  // --- 3. Memory Match Game ---
+  function startMemory() {
+    cleanupArcade();
+    const icons = ['🖥️','⌨️','🖱️','🖨️','🎧','🔊','💾','📷','🎮','📱','🔋','🧠'];
+    // Membuat array berpasangan (total 24 kartu)
+    let deck = [...icons, ...icons].map((val, i) => ({ id: i % icons.length, val })).sort(() => Math.random() - 0.5);
+    
+    let first = null;
+    let lock = false;
+    let matches = 0;
+    let moves = 0;
+    
+    let area = document.getElementById('arcadeArea');
+    area.innerHTML = `
+      <h3>🌈 Memory Match: Temukan Pasangan</h3>
+      <p>Buka dua kartu untuk menemukan gambar yang sama persis. Cocokkan ke-12 pasang secepat mungkin dengan sedikit percobaan.</p>
+      <div class="memory-grid" id="memoryGrid">
+        ${deck.map((c, i) => `<button class="memory-card" id="mem${i}" aria-label="Kartu tertutup" onclick="flipMemory(${i})">❔</button>`).join('')}
+      </div>
+      <p id="memoryStatus" style="font-weight:bold; margin-top:15px;">Pasangan: 0/12 • Percobaan: 0</p>
+      <div id="gameFeedback"></div>
+    `;
+
+    window.flipMemory = (i) => {
+      if (lock) return;
+      let b = document.getElementById('mem' + i);
+      if (b.classList.contains('revealed') || b.disabled) return;
+      
+      b.textContent = deck[i].val;
+      b.classList.add('revealed');
+      
+      if (first === null) {
+        first = i;
+        return;
+      }
+      
+      moves++;
+      let a = first;
+      first = null;
+      
+      if (deck[a].id === deck[i].id) {
+        // Cocok
+        document.getElementById('mem' + a).disabled = true;
+        b.disabled = true;
+        document.getElementById('mem' + a).classList.add('matched');
+        b.classList.add('matched');
+        matches++;
+        
+        document.getElementById('memoryStatus').textContent = `Pasangan: ${matches}/12 • Percobaan: ${moves}`;
+        
+        if (matches === 12) {
+          // Menghitung poin: semakin sedikit mencoba, poin semakin tinggi. Minimal 15, maksimal 40.
+          let points = Math.max(15, Math.min(40, 60 - Math.floor(moves * 1.5)));
+          awardGame(points, 'memory');
+          document.getElementById('memoryStatus').textContent = `Luar Biasa! Semua 12 pasangan gambar ditemukan dalam ${moves} percobaan.`;
+        }
+      } else {
+        // Tidak cocok
+        lock = true;
+        setTimeout(() => {
+          [a, i].forEach(n => {
+            let el = document.getElementById('mem' + n);
+            el.textContent = '❔';
+            el.classList.remove('revealed');
+          });
+          lock = false;
+        }, 800);
+        document.getElementById('memoryStatus').textContent = `Pasangan: ${matches}/12 • Percobaan: ${moves}`;
+      }
+    };
+  }
+
+  /** ==========================================
+   *  INITIALIZATION
+   *  ========================================== */
+  // Render content
+  renderLessons();
+  
+  // Try to restore previous login session
+  restoreAuth();
+  
+  // Initial UI Setup (ensures home stats display properly before login if needed)
+  updateUI();
+
+</script>
+</body>
+</html>
